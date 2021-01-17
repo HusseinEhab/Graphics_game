@@ -28,6 +28,10 @@
 #include "Component/LightComponent.h"
 #pragma region helper_functions
 
+struct SkyLight {
+    bool enabled;
+    glm::vec3 top_color, middle_color, bottom_color;
+};
 std::string read_file(const char *filename)
 {
     std::ifstream fin(filename);
@@ -113,8 +117,9 @@ our::Application *app = new our::Application();
 
 class PlayState : public GameState
 {
+    bool continue_game = false;
     float counter;
-    our::ShaderProgram shader, shader2;
+    our::ShaderProgram shader, shader2, sky_program;
     our::ShaderProgram *ptrShader,*ptrShader2;
     our::Mesh cube_model;
     our::Mesh sun_model;
@@ -124,15 +129,14 @@ class PlayState : public GameState
     our::Mesh Monster_model2;
     our::Mesh Gun_model;
     our::Mesh Bullet_model;
+    our::Mesh worldbox;
     std::vector<Entity *> Entities;
     std::vector<Entity *> LightEntities;
     std::vector<Entity *> Monsters;
     std::vector<Entity *> Bullets;
     std::vector<Entity *> Axes;
 
-//    std::vector<TransformComponent *> transforms;
-//    std::vector<RenderState *> renderStates;
-//    std::vector<MeshRendererComponent *> meshRenderers;
+//    std::vector<Component *> components;
     std::vector<our::Mesh*> meshes;
     int mml = 0;
     float zoom = 1;
@@ -149,7 +153,9 @@ class PlayState : public GameState
 
     Texture2D* TextureObject2 = new Texture2D();
 
-    //////////// CREATING LIGHTS AND ITS COMPONENTS////////////////////////////
+    //////////// CREATING LIGHTS AND ITS //components////////////////////////////
+    SkyLight sky_light;
+    float sky_box_exposure = 2.0f;
     Entity *Light1 = new Entity(NULL);
     LightComponent *light = new LightComponent(LightType::DIRECTIONAL);
     TransformComponent * trlight = new TransformComponent(Light1);
@@ -387,12 +393,13 @@ class PlayState : public GameState
         rs->setDepthTesting(true,GL_LEQUAL);
         rs->setCulling(true,GL_BACK,GL_CCW);
         rs->setBlending(false);
+        //components.push_back(rs);
 
         RenderState * rs2 = new RenderState();
         rs2->setDepthTesting(true,GL_LEQUAL);
         rs2->setCulling(false,GL_BACK,GL_CCW);
         rs2->setBlending(false);
-
+        //components.push_back(rs2);
 
 
         MaterialObj->init(ptrShader, Metal, rs, SampleObject);
@@ -417,6 +424,9 @@ class PlayState : public GameState
     void passLights(our::ShaderProgram * shader) {
         (*shader).set("camera_position", cameraComponent->getEyePosition());
         (*shader).set("view_projection", cameraComponent->getVPMatrix());
+        (*shader).set("sky_light.top_color", sky_light.enabled ? sky_light.top_color : glm::vec3(0.0f));
+        (*shader).set("sky_light.middle_color", sky_light.enabled ? sky_light.middle_color : glm::vec3(0.0f));
+        (*shader).set("sky_light.bottom_color", sky_light.enabled ? sky_light.bottom_color : glm::vec3(0.0f));
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         int light_index = 0;
@@ -462,14 +472,22 @@ class PlayState : public GameState
     
     void onEnter() override
     {
-
+        if(continue_game)
+            return;
+        //components.push_back(cameraTransform);
+        //components.push_back(trlight);
+        //components.push_back(trlight2);
+        //components.push_back(light);
+        //components.push_back(light2);
         counter = 0;
         SampleObject->InitializeSampler();
 
 //        TextureObject2->ActivateTexture("assets/images/ex24_displacement/grass_ground_d.jpg", true);
+
         int width, height;
         glfwGetFramebufferSize(app->window, &width, &height);
-
+        our::mesh_utils::Cuboid(worldbox);
+        meshes.push_back(&worldbox);
 
         shader2.create();
         shader2.attach("assets/shaders/light/light_transform.vert", GL_VERTEX_SHADER);
@@ -481,6 +499,11 @@ class PlayState : public GameState
         shader.attach("assets/shaders/light/light_array.frag", GL_FRAGMENT_SHADER);
         shader.link();
 
+        sky_program.create();
+        // This shader is responsible for rendering the sky box. (Not important for lighting but looks better than a blank background).
+        sky_program.attach("assets/shaders/light/sky_transform.vert", GL_VERTEX_SHADER);
+        sky_program.attach("assets/shaders/light/sky.frag", GL_FRAGMENT_SHADER);
+        sky_program.link();
 
 
 
@@ -507,7 +530,12 @@ class PlayState : public GameState
         Entities.push_back(CameraEntity);
 
 
-        //////////// INITIALIZING LIGHTS AND ITS COMPONENTS////////////////////////////
+        //////////// INITIALIZING LIGHTS AND ITS //components////////////////////////////
+        sky_light.enabled  = true;
+        sky_light.top_color = {0.25, 0.3, 0.5};
+        sky_light.middle_color = {0.35, 0.35, 0.4};
+        sky_light.bottom_color = {0.25, 0.25, 0.25};
+
         trlight->init(app, {0, 1, 2}, {-1, -1, -1}, {1, 1, 1});
         Light1->addComponent(trlight, "transform");
         Light1->addComponent(light, "light");
@@ -519,10 +547,6 @@ class PlayState : public GameState
         LightEntities.push_back(Light2);
 
         ////////////////Initializing Material/////////////////////////////
-        // TODO pass texture and renderstate objects
-        // TODO CHECK CULLING AND BLENDING
-
-//        MaterialObj2->tint = {1,1,1,1};
 
         our::mesh_utils::Cuboid(cube_model, false);
         meshes.push_back(&cube_model);
@@ -533,7 +557,7 @@ class PlayState : public GameState
                                {1, 1}, {0, 0}, {100, 100});
         height_sampler = new Sampler();
         meshes.push_back(&plane_model);
-        createObject({0,-2, -50}, {0, 0, 0}, {1000, 1000, 300}, plane_model,  MaterialObj2);
+        createObject({0,-2, -50}, {0, 0, 0}, {1000, 1000, 300}, plane_model,  MaterialObj3);
 
 
         our::mesh_utils::Sphere(sun_model, {32, 16}, false);
@@ -556,7 +580,7 @@ class PlayState : public GameState
 
         our::mesh_utils::loadOBJ(Gun_model, "assets/models/Gun/newgun.obj");
         meshes.push_back(&Gun_model);
-        createObject({0, -0.5, -2}, {0, 0, 0}, {1, 1, 1}, Gun_model, MaterialObj7, CameraEntity);
+        createObject({0, -1, -2}, {0, 0, 0}, {1, 1, 1}, Gun_model, MaterialObj7, CameraEntity);
 
 
 
@@ -587,6 +611,7 @@ class PlayState : public GameState
 //        meshes.push_back(&Monster_model);
         createPlayingObject({0, -2, -30}, {0, 0, 0}, {1, 1, 1}, Monster_model, MaterialObj5, true);
     }
+
     void CreateMonster2()
     {
 //        our::mesh_utils::loadOBJ(Monster_model2, "assets/models/monster3/monster.obj");
@@ -597,13 +622,15 @@ class PlayState : public GameState
     void CreateBullet() {
         Entity *axis = new Entity(nullptr);
         TransformComponent *ts = new TransformComponent(axis);
+        //components.push_back(ts);
         glm::vec3 pos = ((TransformComponent *) (CameraEntity)->getComponent("transform"))->position;
         glm::vec3 rot = ((TransformComponent *) (CameraEntity)->getComponent("transform"))->rotation;
         ts->init(app, pos, rot, {1, 1, 1});
         axis->addComponent(ts, "transform");
         Axes.push_back(axis);
-        createPlayingObject({0, 0, -2}, {0, 0, 0}, {0.5, 0.5, 0.5}, Bullet_model, MaterialObj8, false, axis);
+        createPlayingObject({0, -0.5, -2}, {0, 0, 0}, {0.5, 0.5, 0.5}, Bullet_model, MaterialObj8, false, axis);
     }
+
     void onDraw(double deltaTime) override
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -628,6 +655,7 @@ class PlayState : public GameState
             glm::mat4 tr1mat = ((TransformComponent *) (*it)->getComponent("transform"))->to_mat4();
             glm::vec3 MonsterPos = {tr1mat[3][0], tr1mat[3][1], tr1mat[3][2]};
 //            glm::vec3 MonsterPos = ((TransformComponent *) (*it)->getComponent("transform"))->position;
+//            for (auto it2 = Bullets.begin(); it2 != Bullets.end() ; ++it2)
             for (auto it2 = Bullets.begin(); it2 != Bullets.end() ; ++it2)
             {
                 glm::mat4 tr2mat = ((TransformComponent *) (*it2)->getComponent("transform"))->to_mat4();
@@ -640,6 +668,7 @@ class PlayState : public GameState
 //                std::cout << b << std::endl;
                 // TODO CHECK FOR X SCALE OF MONSTER
 //                if(BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+1.5 && BulletPos[0] >= MonsterPos[0]-1.5 && BulletPos[1] <=MonsterPos[1]+3 && BulletPos[1] >= MonsterPos[1]) //monster2
+
                 if(BulletPos[2] >= MonsterPos[2]-2 && BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+2.3 && BulletPos[0] >= MonsterPos[0]-2.3 && BulletPos[1] <=MonsterPos[1]+6 && BulletPos[1] >= MonsterPos[1])//monster1
                 {
 //                    auto it4 = Entities.begin(), it5 = Entities.begin();
@@ -907,17 +936,34 @@ class PlayState : public GameState
 
         }
 
+        glUseProgram(sky_program);
+
+        // We don't need a model matrix for the box. Since it follows the camera, we will send the camera position and add it to the sky box vertices.
+        sky_program.set("view_projection", cameraComponent->getVPMatrix());
+        sky_program.set("camera_position", cameraComponent->getEyePosition());
+        // We will then send the sky light to get the colors and the exposure to control how bright the sky will look
+        sky_program.set("sky_light.top_color", sky_light.enabled ? sky_light.top_color : glm::vec3(0.0f));
+        sky_program.set("sky_light.middle_color", sky_light.enabled ? sky_light.middle_color : glm::vec3(0.0f));
+        sky_program.set("sky_light.bottom_color", sky_light.enabled ? sky_light.bottom_color : glm::vec3(0.0f));
+        sky_program.set("exposure", sky_box_exposure);
+
+        // Since we are inside the sky box and we are using a cube that was meant to be seen from the outside,
+        // We will temporarily flip the culling to keep the back faces and remove the front faces.
+        glCullFace(GL_FRONT);
+        worldbox.draw();
+        glCullFace(GL_BACK);
 
 
     }
 
     void onExit() override
     {
-        shader.destroy();
-        shader2.destroy();
-        for ( int i = 0; i<meshes.size(); i++) meshes[i]->destroy();
+//        shader.destroy();
+//        shader2.destroy();
+//        for ( int i = 0; i<meshes.size(); i++) meshes[i]->destroy();
 //        cube_model.destroy();
-        cameraController->release();
+        continue_game = true;
+
     }
 
     void createObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, our::Mesh &mesh, Material * material, Entity * parent =nullptr)
@@ -927,14 +973,8 @@ class PlayState : public GameState
         ts->init(app, pos, rot, sc);
         MeshRendererComponent* mrc = new MeshRendererComponent();
         mrc->init(material, &mesh);
-//        RenderState* rs = new RenderState();
-//        renderStates.push_back(rs);
-//        meshRenderers.push_back(mrc);
-//        transforms.push_back(ts);
-//        rs->setDepthTesting(true,GL_LEQUAL);
-//        rs->setCulling(true,GL_BACK,GL_CCW);
-//        rs->setBlending(false);
-//        ent->addComponent(rs,"renderState");
+        //components.push_back(mrc);
+        //components.push_back(ts);
         ent->addComponent(mrc, "mesh");
         ent->addComponent(ts, "transform");
         Entities.push_back(ent);
@@ -947,14 +987,8 @@ class PlayState : public GameState
         ts->init(app, pos, rot, sc);
         MeshRendererComponent* mrc = new MeshRendererComponent();
         mrc->init(material, &mesh);
-//        RenderState* rs = new RenderState();
-//        renderStates.push_back(rs);
-//        meshRenderers.push_back(mrc);
-//        transforms.push_back(ts);
-//        rs->setDepthTesting(true,GL_LEQUAL);
-//        rs->setCulling(true,GL_BACK,GL_CCW);
-//        rs->setBlending(false);
-//        ent->addComponent(rs,"renderState");
+        //components.push_back(mrc);
+        //components.push_back(ts);
         ent->addComponent(mrc, "mesh");
         ent->addComponent(ts, "transform");
         Entities.push_back(ent);
@@ -963,25 +997,57 @@ class PlayState : public GameState
         else
             Bullets.push_back(ent);
     }
-    
-};
 
+    ~ PlayState()
+    {
+        for(int i = 0; i< Entities.size(); i++)
+            delete Entities[i];
+        for(int i = 0; i< LightEntities.size(); i++)
+            delete LightEntities[i];
+
+        delete MaterialObj;
+        delete MaterialObj2;
+        delete MaterialObj3;
+        delete MaterialObj4;
+        delete MaterialObj5;
+        delete MaterialObj6;
+        delete MaterialObj7;
+        delete MaterialObj8;
+    }
+
+};
+PlayState *pState = new PlayState();
 class MenuState : public GameState
 {
-
-
+    int width, height;
 public:
+
 
     GameState *handleEvents()
     {
 
-        if (app->getKeyboard().justPressed(GLFW_KEY_ESCAPE))
+//        if (app->getKeyboard().justPressed(GLFW_KEY_ESCAPE))
+//        {
+//            return switchState(2);
+//        }
+        if (app->getMouse().justReleased(0))
         {
-            return switchState(2);
+            glm::vec2 position = app->getMouse().getMousePosition();
+            if (position[0] < (width/2))
+                return switchState(0);
+            else {
+                //TODO:
+                glfwDestroyWindow(app->window);
+
+            }
         }
+        return NULL;
+
     }
     void onEnter() override
     {
+
+        glfwGetFramebufferSize(app->window, &width, &height);
         program = glCreateProgram(); // We ask GL to create a program for us and return a uint that we will use it by.
         // (act as a pointer to the created program).
 
@@ -1004,7 +1070,16 @@ public:
         glBindVertexArray(vertex_array); // Binding is like selecting which object to use.
         // Note that we need to bind a vertex array to draw
         // Even if that vertex array does not send any data down the pipeline
-
+//        if (app->getMouse().justReleased(0))
+//        {
+//            if (app->getMouse().getMousePosition()[0] < (width/2))
+//                switchState(pState);
+//            else {
+//                //TODO:
+//                glfwDestroyWindow(app->window);
+//
+//            }
+//        }
         //Following Code is for phase 1
         if (app->getKeyboard().justPressed(GLFW_KEY_1))
             keyShaderOption = 1;
@@ -1038,7 +1113,7 @@ public:
 };
 
 MenuState *mState = new MenuState();
-PlayState *pState = new PlayState();
+
 
 GameState *switchState(int state)
 {
