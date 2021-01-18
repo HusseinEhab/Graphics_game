@@ -116,13 +116,37 @@ our::Application *app = new our::Application();
 int currentLevel = 1;
 class LevelOne : public GameState
 {
+public:
+    ~LevelOne()
+    {
+        for(int i = 0; i< Entities.size(); i++)
+            delete Entities[i];
+        for(int i = 0; i< LightEntities.size(); i++)
+            delete LightEntities[i];
+
+        shader.destroy();
+        shader2.destroy();
+        sky_program.destroy();
+        for ( int i = 0; i<meshes.size(); i++)
+            meshes[i]->destroy();
+        delete MaterialObj;
+        delete MaterialObj2;
+        delete MaterialObj3;
+        delete MaterialObj4;
+        delete MaterialObj5;
+        delete MaterialObj6;
+        delete MaterialObj7;
+        delete MaterialObj8;
+        delete TextureObject;
+    }
+private:
 
     float delay;
     float Monsterspeed;
     bool win = false;
     bool lose = false;
     float xThresh = 1.3, yThresh = 2.5, zThresh= 2;
-    int nMonsters = 5;
+    int nMonsters = 1;
     int nKilled=  0;
     int nGenerated = 0;
     bool continue_game = false;
@@ -423,7 +447,7 @@ class LevelOne : public GameState
         RenderState * rs = new RenderState();
         rs->setDepthTesting(true,GL_LEQUAL);
         rs->setCulling(false,GL_BACK,GL_CCW);
-        rs->setBlending(true);
+        rs->setBlending(false);
         //components.push_back(rs);
 
         RenderState * rs2 = new RenderState();
@@ -517,9 +541,10 @@ class LevelOne : public GameState
             }
             delete Bullets[j];
             delete Axes[j];
-            break;
         }
-        for(int j = 0; j<Bullets.size();j++)
+
+        int size = Bullets.size();
+        for(int j = 0; j<size;j++)
         {
             Bullets.pop_back();
             Axes.pop_back();
@@ -540,13 +565,15 @@ class LevelOne : public GameState
                 {
                     it3 = Entities.erase(it3);
                     it3 --;
+                    break;
                 }
 
             }
             delete Monsters[j];
-            break;
+
         }
-        for(int j = 0; j<Monsters.size();j++)
+        int size = Monsters.size();
+        for(int j = 0; j<size;j++)
         {
             Monsters.pop_back();
 
@@ -554,9 +581,10 @@ class LevelOne : public GameState
 
 
     }
+
     void GotoLevel2()
     {
-        delay = 3;
+        delay = 1.5;
         nMonsters = 15;
         Monsterspeed = 0.2;
         nKilled = 0;
@@ -565,6 +593,7 @@ class LevelOne : public GameState
         yThresh = 6;
         zThresh= 2;
         EmptyBullets();
+//        sky_light.bottom_color={};
     }
 
     void resetLevel()
@@ -585,7 +614,7 @@ class LevelOne : public GameState
 
         continue_game = true;
         delay = 10;
-        nMonsters = 4;
+//        nMonsters = 4;
         Monsterspeed = 0.08;
 
 
@@ -1102,28 +1131,7 @@ class LevelOne : public GameState
 
     }
     
-    void EndLevel()
-    {
-        for(int i = 0; i< Entities.size(); i++)
-            delete Entities[i];
-        for(int i = 0; i< LightEntities.size(); i++)
-            delete LightEntities[i];
 
-        shader.destroy();
-        shader2.destroy();
-        sky_program.destroy();
-        for ( int i = 0; i<meshes.size(); i++)
-            meshes[i]->destroy();
-        delete MaterialObj;
-        delete MaterialObj2;
-        delete MaterialObj3;
-        delete MaterialObj4;
-        delete MaterialObj5;
-        delete MaterialObj6;
-        delete MaterialObj7;
-        delete MaterialObj8;   
-        delete TextureObject;
-    }
 
 
 
