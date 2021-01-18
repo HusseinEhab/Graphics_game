@@ -146,7 +146,7 @@ private:
     bool win = false;
     bool lose = false;
     float xThresh = 1.3, yThresh = 2.5, zThresh= 2;
-    int nMonsters = 1;
+    int nMonsters = 5;
     int nKilled=  0;
     int nGenerated = 0;
     bool continue_game = false;
@@ -613,7 +613,7 @@ private:
         srand((unsigned) time(0));
 
         continue_game = true;
-        delay = 10;
+        delay = 6;
 //        nMonsters = 4;
         Monsterspeed = 0.08;
 
