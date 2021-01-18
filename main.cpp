@@ -146,7 +146,7 @@ private:
     bool win = false;
     bool lose = false;
     float xThresh = 1.3, yThresh = 2.5, zThresh= 2;
-    int nMonsters = 5;
+    int nMonsters = 7;
     int nKilled=  0;
     int nGenerated = 0;
     bool continue_game = false;
@@ -316,33 +316,31 @@ private:
         asphalt.push_back(TextureObject);
 
 
-//        ///////////////////// GENERATING Girl MATERIAL //////////////////////////
-//        std::vector<Texture2D *> Girl;
-//
-//        TextureObject = new Texture2D();
-//        TextureObject->ActivateTexture("assets/models/kawai/textures/face.jpg", true);
-//        Girl.push_back(TextureObject);
-//
-//        TextureObject = new Texture2D();
-//        glGenTextures(1, &(TextureObject->texture));
-//        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
-//        Girl.push_back(TextureObject);
-//
-//
-//        TextureObject = new Texture2D();
-//        glGenTextures(1, &(TextureObject->texture));
-//        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
-//        Girl.push_back(TextureObject);
-//
-//        TextureObject = new Texture2D();
-//        glGenTextures(1, &(TextureObject->texture));
-//        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
-//        Girl.push_back(TextureObject);
-//
-//        TextureObject = new Texture2D();
-//        glGenTextures(1, &(TextureObject->texture));
-//        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
-//        Girl.push_back(TextureObject);
+        ///////////////////// GENERATING Girl MATERIAL //////////////////////////
+        std::vector<Texture2D *> Lava;
+
+        TextureObject = new Texture2D();
+        TextureObject->ActivateTexture("assets/images/common/materials/Lava/Lava_002_COLOR.png", true);
+        Lava.push_back(TextureObject);
+
+        TextureObject = new Texture2D();
+        TextureObject->ActivateTexture("assets/images/common/materials/Lava/Lava_002_SPEC.png", true);
+        Lava.push_back(TextureObject);
+
+
+        TextureObject = new Texture2D();
+        glGenTextures(1, &(TextureObject->texture));
+        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
+        Lava.push_back(TextureObject);
+
+        TextureObject = new Texture2D();
+        glGenTextures(1, &(TextureObject->texture));
+        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
+        Lava.push_back(TextureObject);
+
+        TextureObject = new Texture2D();
+        TextureObject->ActivateTexture("assets/images/common/materials/Lava/Lava_002_OCC.png", true);
+        Lava.push_back(TextureObject);
 
 
         ////////////////////////////// MONSTER ///////////////////////////////////
@@ -464,7 +462,7 @@ private:
 
         MaterialObj3->init(ptrShader, asphalt, rs2, SampleObject);
 
-//        MaterialObj4->init(ptrShader, Girl, rs2, SampleObject);
+        MaterialObj4->init(ptrShader, Lava, rs2, SampleObject);
 
         MaterialObj5->init(ptrShader, Monster, rs2, SampleObject);
 
@@ -582,6 +580,21 @@ private:
 
     }
 
+    void Changetexture()
+    {
+        for(int i = 0; i< Entities.size(); i++)
+        {
+            if(Entities[i]->getComponent("mesh"))
+            {
+                MeshRendererComponent *mesh =((MeshRendererComponent *)Entities[i]->getComponent("mesh"));
+                if(mesh->Materialpt == MaterialObj2)
+                    mesh->Materialpt = MaterialObj4;
+            }
+
+        }
+
+    }
+
     void GotoLevel2()
     {
         delay = 1.5;
@@ -593,7 +606,12 @@ private:
         yThresh = 6;
         zThresh= 2;
         EmptyBullets();
-//        sky_light.bottom_color={};
+        Changetexture();
+
+        sky_light.bottom_color={0.098, 0.101, 0.33};
+        sky_light.middle_color={0.098, 0.101, 0.33};
+//        sky_light.top_color={0.098, 0.101, 0.33};
+
     }
 
     void resetLevel()
