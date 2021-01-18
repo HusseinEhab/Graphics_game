@@ -238,8 +238,9 @@ int our::Application::run() {
         }
         if(currentGS)
         {
-            nextGS=currentGS->handleEvents();
             currentGS->onDraw(current_frame_time - last_frame_time);
+            nextGS=currentGS->handleEvents();
+
 
         }
          last_frame_time = current_frame_time; // Then update the last frame start time (this frame is now the last frame)
@@ -363,3 +364,5 @@ void our::Application::setupCallbacks() {
         }
     });
 }
+
+

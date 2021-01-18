@@ -5,7 +5,6 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
-
 #include "../ECS/GameState/GameState.h"
 #include "input/keyboard.hpp"
 #include "input/mouse.hpp"
@@ -23,13 +22,13 @@ namespace our {
     // This class act as base class for all the Applications covered in the examples.
     // It offers the functionalities needed by all the examples.
     class Application {
-        
-       
+
+
     protected:
              // Pointer to the window created by GLFW using "glfwCreateWindow()".
         Keyboard keyboard;                  // Instance of "our" keyboard class that handles keyboard functionalities.
         Mouse mouse;                        // Instance of "our" mouse class that handles mouse functionalities.
-        
+
         
         // Virtual functions to be overrode and change the default behaviour of the application
         // according to the example needs.
@@ -46,7 +45,6 @@ namespace our {
         virtual void onDraw(double deltaTime){}         // Called every frame in the game loop passing the time taken to draw the frame "Delta time".
         virtual void onDestroy(){}                      // Called once after the game loop ends for house cleaning.
 
-
         // Override these functions to get mouse and keyboard event.
         virtual void onKeyEvent(int key, int scancode, int action, int mods){}      
         virtual void onCursorMoveEvent(double x, double y){}
@@ -55,6 +53,7 @@ namespace our {
         virtual void onScrollEvent(double x_offset, double y_offset){}
 
         int run();      // This is the main class function that run the whole application (Initialize, Game loop, House cleaning).
+
 
         // Class Getters.
         GLFWwindow* getWindow(){ return window; }
@@ -79,6 +78,8 @@ namespace our {
             return size;
         }
     };
+
+
 
 }
 

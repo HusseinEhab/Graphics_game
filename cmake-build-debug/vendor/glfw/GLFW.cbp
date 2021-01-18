@@ -4,175 +4,167 @@
 	<Project>
 		<Option title="GLFW"/>
 		<Option makefile_is_custom="1"/>
-		<Option compiler="gcc"/>
+		<Option compiler="msvc8"/>
 		<Option virtualFolders="CMake Files\;CMake Files\vendor\;CMake Files\vendor\glfw\;CMake Files\vendor\glfw\src\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw"/>
+				<Option working_dir="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="glfw">
-				<Option output="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/libglfw3.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src"/>
+				<Option output="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src/glfw3.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
-				<Option compiler="gcc"/>
+				<Option compiler="msvc8"/>
 				<Compiler>
 					<Add option="-D_GLFW_USE_CONFIG_H"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/include"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src"/>
-					<Add directory="/usr/include/c++/9"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
-					<Add directory="/usr/include/c++/9/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/include"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 glfw"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 glfw"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="glfw/fast">
-				<Option output="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/libglfw3.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src"/>
+				<Option output="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src/glfw3.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
-				<Option compiler="gcc"/>
+				<Option compiler="msvc8"/>
 				<Compiler>
 					<Add option="-D_GLFW_USE_CONFIG_H"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/include"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src"/>
-					<Add directory="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src"/>
-					<Add directory="/usr/include/c++/9"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
-					<Add directory="/usr/include/c++/9/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add option="-D_UNICODE"/>
+					<Add option="-D_CRT_SECURE_NO_WARNINGS"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/include"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src"/>
+					<Add directory="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 glfw/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 glfw/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CHS\Senior-2\Graphics\Project\cmake-build-debug\vendor\glfw\src\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/cmake-build-debug/vendor/glfw/src/glfw_config.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/cmake-build-debug/vendor/glfw/src/glfw_config.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/include/GLFW/glfw3.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/include/GLFW/glfw3.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/include/GLFW/glfw3native.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/include/GLFW/glfw3native.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/context.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/context.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/egl_context.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/egl_context.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/egl_context.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/egl_context.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/glx_context.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/init.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/glx_context.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/input.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/init.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/internal.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/input.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/mappings.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/internal.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/monitor.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/linux_joystick.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/osmesa_context.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/linux_joystick.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/osmesa_context.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/mappings.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/vulkan.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/monitor.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/wgl_context.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/osmesa_context.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/wgl_context.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/osmesa_context.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_init.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/posix_thread.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_joystick.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/posix_thread.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_joystick.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/posix_time.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_monitor.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/posix_time.h">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_platform.h">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/vulkan.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_thread.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/window.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_time.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/x11_init.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/win32_window.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/x11_monitor.c">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/window.c">
 			<Option target="glfw"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/x11_platform.h">
-			<Option target="glfw"/>
-		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/x11_window.c">
-			<Option target="glfw"/>
-		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/xkb_unicode.c">
-			<Option target="glfw"/>
-		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/xkb_unicode.h">
-			<Option target="glfw"/>
-		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/CMakeLists.txt">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/CMakeLists.txt">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\vendor\glfw\"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/CMakeLists.txt">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/glfw3.pc.in">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/glfw3.pc.in">
 			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/glfw3Config.cmake.in">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/glfw3Config.cmake.in">
 			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
 		</Unit>
-		<Unit filename="/home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src/glfw_config.h.in">
+		<Unit filename="D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src/glfw_config.h.in">
 			<Option virtualFolder="CMake Files\vendor\glfw\src\"/>
 		</Unit>
 	</Project>

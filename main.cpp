@@ -24,7 +24,7 @@
 #include <vector>
 #include <texture/Texture2D.h>
 #include <texture/Sampler.h>
-
+#include <ctime>
 #include "Component/LightComponent.h"
 #pragma region helper_functions
 
@@ -112,18 +112,27 @@ glm::vec2 mouse = glm::vec2(0, 0);
 GameState *switchState(int state);
 
 
-
 our::Application *app = new our::Application();
-
-class PlayState : public GameState
+int currentLevel = 1;
+class LevelOne : public GameState
 {
+
+    float delay;
+    float Monsterspeed;
+    bool win = false;
+    bool lose = false;
+    float xThresh = 1.3, yThresh = 2.5, zThresh= 2;
+    int nMonsters = 5;
+    int nKilled=  0;
+    int nGenerated = 0;
     bool continue_game = false;
-    float counter;
+    float counter = 5;
     our::ShaderProgram shader, shader2, sky_program;
     our::ShaderProgram *ptrShader,*ptrShader2;
     our::Mesh cube_model;
     our::Mesh sun_model;
     our::Mesh plane_model;
+    our::Mesh wall_model;
     our::Mesh Girl_model;
     our::Mesh Monster_model;
     our::Mesh Monster_model2;
@@ -140,7 +149,6 @@ class PlayState : public GameState
     std::vector<our::Mesh*> meshes;
     int mml = 0;
     float zoom = 1;
-    Sampler *height_sampler;
     glm::mat4 cameraMatrix;
     Entity *CameraEntity = new Entity(NULL);
     CameraComponent *cameraComponent = new CameraComponent();
@@ -151,7 +159,6 @@ class PlayState : public GameState
     Texture2D* TextureObject = new Texture2D();
     Sampler* SampleObject = new Sampler();
 
-    Texture2D* TextureObject2 = new Texture2D();
 
     //////////// CREATING LIGHTS AND ITS //components////////////////////////////
     SkyLight sky_light;
@@ -176,9 +183,33 @@ class PlayState : public GameState
 
     GameState *handleEvents()
     {
+        if(win)
+        {
+//            EndLevel();
+            if(currentLevel == 1)
+            {
+                win = false;
+                currentLevel = 2;
+                // TODO CALL FUNCTIONS THAT WILL DELETE ALL BULLETS AND RESET ALL VARIABLES RELATED TO SPEED AND SHIT
+            }
+            else
+            {
+                win = false;
+                resetLevel();
+            }
+            return switchState(0);
+        }
+        else if(lose)
+        {
+            lose = false;
+            resetLevel();
+            return switchState(0);
+
+        }
         if (app->getKeyboard().justPressed(GLFW_KEY_ESCAPE))
         {
-            return switchState(1);
+            onExit();
+            return switchState(0);
         }
         return NULL;
     }
@@ -186,28 +217,28 @@ class PlayState : public GameState
     void CreateMaterials()
     {
         ///////////////////// GENERATING METAL MATERIAL //////////////////////////
-        std::vector<Texture2D *> Metal;
-        TextureObject = new Texture2D();
-        TextureObject->ActivateTexture("assets/images/common/materials/metal/albedo.jpg", true);
-        Metal.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        TextureObject->ActivateTexture("assets/images/common/materials/metal/specular.jpg", true);
-        Metal.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        TextureObject->ActivateTexture("assets/images/common/materials/metal/roughness.jpg", true);
-        Metal.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
-        Metal.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
-        Metal.push_back(TextureObject);
+//        std::vector<Texture2D *> Metal;
+//        TextureObject = new Texture2D();
+//        TextureObject->ActivateTexture("assets/images/common/materials/metal/albedo.jpg", true);
+//        Metal.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        TextureObject->ActivateTexture("assets/images/common/materials/metal/specular.jpg", true);
+//        Metal.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        TextureObject->ActivateTexture("assets/images/common/materials/metal/roughness.jpg", true);
+//        Metal.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
+//        Metal.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
+//        Metal.push_back(TextureObject);
 
 
         ///////////////////// GENERATING WOOD MATERIAL //////////////////////////
@@ -261,33 +292,33 @@ class PlayState : public GameState
         asphalt.push_back(TextureObject);
 
 
-        ///////////////////// GENERATING Girl MATERIAL //////////////////////////
-        std::vector<Texture2D *> Girl;
-
-        TextureObject = new Texture2D();
-        TextureObject->ActivateTexture("assets/models/kawai/textures/face.jpg", true);
-        Girl.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
-        Girl.push_back(TextureObject);
-
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
-        Girl.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
-        Girl.push_back(TextureObject);
-
-        TextureObject = new Texture2D();
-        glGenTextures(1, &(TextureObject->texture));
-        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
-        Girl.push_back(TextureObject);
+//        ///////////////////// GENERATING Girl MATERIAL //////////////////////////
+//        std::vector<Texture2D *> Girl;
+//
+//        TextureObject = new Texture2D();
+//        TextureObject->ActivateTexture("assets/models/kawai/textures/face.jpg", true);
+//        Girl.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
+//        Girl.push_back(TextureObject);
+//
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
+//        Girl.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {0, 0, 0, 255});
+//        Girl.push_back(TextureObject);
+//
+//        TextureObject = new Texture2D();
+//        glGenTextures(1, &(TextureObject->texture));
+//        our::texture_utils::singleColor(TextureObject->texture, {255, 255, 255, 255});
+//        Girl.push_back(TextureObject);
 
 
         ////////////////////////////// MONSTER ///////////////////////////////////
@@ -391,8 +422,8 @@ class PlayState : public GameState
 
         RenderState * rs = new RenderState();
         rs->setDepthTesting(true,GL_LEQUAL);
-        rs->setCulling(true,GL_BACK,GL_CCW);
-        rs->setBlending(false);
+        rs->setCulling(false,GL_BACK,GL_CCW);
+        rs->setBlending(true);
         //components.push_back(rs);
 
         RenderState * rs2 = new RenderState();
@@ -402,14 +433,14 @@ class PlayState : public GameState
         //components.push_back(rs2);
 
 
-        MaterialObj->init(ptrShader, Metal, rs, SampleObject);
+//        MaterialObj->init(ptrShader, Metal, rs, SampleObject);
 //        MaterialObj->tint = {1,1,1,1};
 
         MaterialObj2->init(ptrShader, Wood, rs2, SampleObject);
 
         MaterialObj3->init(ptrShader, asphalt, rs2, SampleObject);
 
-        MaterialObj4->init(ptrShader, Girl, rs2, SampleObject);
+//        MaterialObj4->init(ptrShader, Girl, rs2, SampleObject);
 
         MaterialObj5->init(ptrShader, Monster, rs2, SampleObject);
 
@@ -469,20 +500,100 @@ class PlayState : public GameState
         // Since the light array in the shader has a constant size, we need to tell the shader how many lights we sent.
         (*shader).set("light_count", light_index);
     }
+
+    void EmptyBullets()
+    {
+        for(int j = 0; j<Bullets.size();j++)
+        {
+            for (auto it3 = Entities.begin(); it3 != Entities.end(); ++it3)
+            {
+                
+                if(Bullets[j] == (*it3))
+                {
+                    it3 = Entities.erase(it3);
+                    it3 --;
+                }
+                
+            }
+            delete Bullets[j];
+            delete Axes[j];
+            break;
+        }
+        for(int j = 0; j<Bullets.size();j++)
+        {
+            Bullets.pop_back();
+            Axes.pop_back();
+
+        }
+        
+
+    }
+
+    void EmptyMonsters()
+    {
+        for(int j = 0; j<Monsters.size();j++)
+        {
+            for (auto it3 = Entities.begin(); it3 != Entities.end(); ++it3)
+            {
+
+                if(Monsters[j] == (*it3))
+                {
+                    it3 = Entities.erase(it3);
+                    it3 --;
+                }
+
+            }
+            delete Monsters[j];
+            break;
+        }
+        for(int j = 0; j<Monsters.size();j++)
+        {
+            Monsters.pop_back();
+
+        }
+
+
+    }
+    void GotoLevel2()
+    {
+        delay = 3;
+        nMonsters = 15;
+        Monsterspeed = 0.2;
+        nKilled = 0;
+        nGenerated = 0;
+        xThresh = 2.3;
+        yThresh = 6;
+        zThresh= 2;
+        EmptyBullets();
+    }
+
+    void resetLevel()
+    {
+        nKilled = 0;
+        nGenerated = 0;
+        EmptyBullets();
+        EmptyMonsters();
+    }
     
     void onEnter() override
     {
+        if(currentLevel == 2)
+            GotoLevel2();
         if(continue_game)
             return;
-        //components.push_back(cameraTransform);
-        //components.push_back(trlight);
-        //components.push_back(trlight2);
-        //components.push_back(light);
-        //components.push_back(light2);
+        srand((unsigned) time(0));
+
+        continue_game = true;
+        delay = 10;
+        nMonsters = 4;
+        Monsterspeed = 0.08;
+
+
+
+
         counter = 0;
         SampleObject->InitializeSampler();
 
-//        TextureObject2->ActivateTexture("assets/images/ex24_displacement/grass_ground_d.jpg", true);
 
         int width, height;
         glfwGetFramebufferSize(app->window, &width, &height);
@@ -509,7 +620,6 @@ class PlayState : public GameState
 
 
         // FOR EACH ENTITY WE WILL USE IT ON ITS SHADER
-
         ptrShader = &shader;
         ptrShader2 = &shader2;
         CreateMaterials();
@@ -548,35 +658,39 @@ class PlayState : public GameState
 
         ////////////////Initializing Material/////////////////////////////
 
-        our::mesh_utils::Cuboid(cube_model, false);
-        meshes.push_back(&cube_model);
+//        our::mesh_utils::Cuboid(cube_model, false);
+//        meshes.push_back(&cube_model);
 //        createObject({5, 5, 5}, {0, 0, 0}, {5, 5, 5}, cube_model, MaterialObj);
 
 
         our::mesh_utils::Plane(plane_model, {1, 1}, false, {0, 0, 0},
                                {1, 1}, {0, 0}, {100, 100});
-        height_sampler = new Sampler();
         meshes.push_back(&plane_model);
         createObject({0,-2, -50}, {0, 0, 0}, {1000, 1000, 300}, plane_model,  MaterialObj3);
 
+        // TODO MAKE AS WOODEN WALLS
+        our::mesh_utils::Plane(wall_model, {1, 1}, false, {0, 0, 0},
+                               {1, 1}, {0, 0}, {100, 100});
+        meshes.push_back(&wall_model);
+        createObject({-10,-2, 0}, {0, 0, glm::pi<float>()/2}, {40, 10, 200}, wall_model,  MaterialObj2);
+        createObject({11,-2, 0}, {0, 0, glm::pi<float>()/2}, {40, 10, 200}, wall_model,  MaterialObj2);
 
-        our::mesh_utils::Sphere(sun_model, {32, 16}, false);
-        meshes.push_back(&sun_model);
+//        our::mesh_utils::Sphere(sun_model, {32, 16}, false);
+//        meshes.push_back(&sun_model);
 //        createObject({7, 10, -7}, {0, 0, 0}, {5, 5, 5}, sun_model,  MaterialObj3);
 
 
-        our::mesh_utils::loadOBJ(Girl_model, "assets/models/kawai/Signora.obj");
-        meshes.push_back(&Girl_model);
+//        our::mesh_utils::loadOBJ(Girl_model, "assets/models/kawai/Signora.obj");
+//        meshes.push_back(&Girl_model);
 //        createObject({2, 4, -3}, {0, 0, 0}, {0.01, 0.01, 0.01}, Girl_model, MaterialObj4);
 
 
         our::mesh_utils::loadOBJ(Monster_model, "assets/models/monster/monsterr.obj");
         meshes.push_back(&Monster_model);
-        CreateMonster1();
 
         our::mesh_utils::loadOBJ(Monster_model2, "assets/models/monster3/monster.obj");
         meshes.push_back(&Monster_model2);
-        createPlayingObject({2, -2, -35}, {0, 0, 0}, {0.1, 0.1, 0.1}, Monster_model2, MaterialObj6, true);
+//        createPlayingObject({2, -2, -35}, {0, 0, 0}, {0.1, 0.1, 0.1}, Monster_model2, MaterialObj6, true);
 
         our::mesh_utils::loadOBJ(Gun_model, "assets/models/Gun/newgun.obj");
         meshes.push_back(&Gun_model);
@@ -605,18 +719,45 @@ class PlayState : public GameState
 
     }
 
-    void CreateMonster1()
+    void CreateMonster1(float x=0)
     {
 //        our::mesh_utils::loadOBJ(Monster_model, "assets/models/monster/monster.obj");
 //        meshes.push_back(&Monster_model);
-        createPlayingObject({0, -2, -30}, {0, 0, 0}, {1, 1, 1}, Monster_model, MaterialObj5, true);
+        createPlayingObject({x, -2, -30}, {0, 0, 0}, {0.1, 0.1, 0.1}, Monster_model2, MaterialObj6, true);
+
     }
 
-    void CreateMonster2()
+    void CreateMonster2(float x=0)
     {
 //        our::mesh_utils::loadOBJ(Monster_model2, "assets/models/monster3/monster.obj");
 //        meshes.push_back(&Monster_model2);
-        createPlayingObject({2, -2, -35}, {0, 0, 0}, {0.1, 0.1, 0.1}, Monster_model2, MaterialObj6, true);
+        createPlayingObject({x, -2, -30}, {0, 0, 0}, {1, 1, 1}, Monster_model, MaterialObj5, true);
+    }
+
+    void GenerateMonsters()
+    {
+
+        int result = 1 + (rand() % 3);
+        switch (result) {
+            case 1:
+                if(currentLevel == 1)
+                    CreateMonster1(-4);
+                else
+                    CreateMonster2(-4);
+                break;
+            case 2:
+                if(currentLevel == 1)
+                    CreateMonster1(0);
+                else
+                    CreateMonster2(0);
+                break;
+            case 3:
+                if(currentLevel == 1)
+                    CreateMonster1(4);
+                else
+                    CreateMonster2(4);
+                break;
+        }
     }
 
     void CreateBullet() {
@@ -635,30 +776,36 @@ class PlayState : public GameState
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         counter += deltaTime;
-        if(counter >= 50)
+        if(counter >= delay && nGenerated <nMonsters)
         {
-            CreateMonster1();
-            CreateMonster2();
+            GenerateMonsters();
+            nGenerated++;
             counter =0;
-
         }
-//        std::cout<< Entities.size() << std::endl;
-//        std::cout<< Monsters.size() << std::endl;
-//        std::cout<< Bullets.size() << std::endl;
-//        bool found = false;
+
+        for (int i = 0; i < Monsters.size(); i++) {
+            glm::mat4 tr1mat = ((TransformComponent *) Monsters[i]->getComponent("transform"))->to_mat4();
+            glm::vec3 MonsterPos = {tr1mat[3][0], tr1mat[3][1], tr1mat[3][2]};
+            glm::vec3 pos = ((TransformComponent *) (CameraEntity)->getComponent("transform"))->position;
+            if(MonsterPos[2] >= pos[2]) {
+                lose = true;
+//                win = true;
+            }
+        }
         if(app->getMouse().justPressed(GLFW_MOUSE_BUTTON_1))
         {
             CreateBullet();
         }
-        for (auto it = Monsters.begin(); it != Monsters.end(); ++it)
+        for (int i = 0; i < Monsters.size(); i++)
         {
-            glm::mat4 tr1mat = ((TransformComponent *) (*it)->getComponent("transform"))->to_mat4();
+            glm::mat4 tr1mat = ((TransformComponent *) Monsters[i]->getComponent("transform"))->to_mat4();
             glm::vec3 MonsterPos = {tr1mat[3][0], tr1mat[3][1], tr1mat[3][2]};
 //            glm::vec3 MonsterPos = ((TransformComponent *) (*it)->getComponent("transform"))->position;
 //            for (auto it2 = Bullets.begin(); it2 != Bullets.end() ; ++it2)
-            for (auto it2 = Bullets.begin(); it2 != Bullets.end() ; ++it2)
+//            for (auto it2 = Bullets.begin(); it2 != Bullets.end() ; ++it2)
+            for (int j = 0; j < Bullets.size(); j++)
             {
-                glm::mat4 tr2mat = ((TransformComponent *) (*it2)->getComponent("transform"))->to_mat4();
+                glm::mat4 tr2mat = ((TransformComponent *) (Bullets[j])->getComponent("transform"))->to_mat4();
                 glm::vec3 BulletPos = {tr2mat[3][0], tr2mat[3][1], tr2mat[3][2]};;
 //                glm::vec3 BulletPos = ((TransformComponent *) (*it2)->getComponent("transform"))->position;
 
@@ -669,20 +816,22 @@ class PlayState : public GameState
                 // TODO CHECK FOR X SCALE OF MONSTER
 //                if(BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+1.5 && BulletPos[0] >= MonsterPos[0]-1.5 && BulletPos[1] <=MonsterPos[1]+3 && BulletPos[1] >= MonsterPos[1]) //monster2
 
-                if(BulletPos[2] >= MonsterPos[2]-2 && BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+2.3 && BulletPos[0] >= MonsterPos[0]-2.3 && BulletPos[1] <=MonsterPos[1]+6 && BulletPos[1] >= MonsterPos[1])//monster1
+//                if(BulletPos[2] >= MonsterPos[2]-2 && BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+2.3 && BulletPos[0] >= MonsterPos[0]-2.3 && BulletPos[1] <=MonsterPos[1]+6 && BulletPos[1] >= MonsterPos[1])//monster1
+                if(BulletPos[2] >= MonsterPos[2]-zThresh && BulletPos[2] <= MonsterPos[2] && BulletPos[0] <= MonsterPos[0]+xThresh && BulletPos[0] >= MonsterPos[0]-xThresh && BulletPos[1] <=MonsterPos[1]+yThresh && BulletPos[1] >= MonsterPos[1])//monster1
                 {
+                    nKilled ++;
 //                    auto it4 = Entities.begin(), it5 = Entities.begin();
                     for (auto it3 = Entities.begin(); it3 != Entities.end(); ++it3)
                     {
 
 
 
-                        if((*it) == (*it3))
+                        if(Monsters[i] == (*it3))
                         {
                             it3 = Entities.erase(it3);
                             it3 --;
                         }
-                        if((*it2) == (*it3))
+                        if(Bullets[j] == (*it3))
                         {
                             it3 = Entities.erase(it3);
                             it3 --;
@@ -690,10 +839,15 @@ class PlayState : public GameState
 
 
                     }
-                    it2 = Bullets.erase(it2);
-                    it2 --;
-                    it  = Monsters.erase(it);
-                    it --;
+                    delete Bullets[j];
+                    delete Axes[j];
+                    delete Monsters[i];
+
+                    Bullets.erase(Bullets.begin() + j);
+                    Axes.erase(Axes.begin() + j);
+                    j --;
+                    Monsters.erase(Monsters.begin() + i);
+                    i --;
                     break;
 
 
@@ -706,9 +860,19 @@ class PlayState : public GameState
 //        std::cout<< Monsters.size() << std::endl;
 //        std::cout<< Bullets.size() << std::endl;
 
+        if(!lose)
+        {
+            if(nKilled == nMonsters)
+            {
+                win = true;
+            }
+        }
+
+
+
         for (unsigned int i = 0; i < Monsters.size(); i++) {
                 TransformComponent *transComponent = ((TransformComponent *) Monsters[i]->getComponent("transform"));
-                transComponent->Move(0.08);
+                transComponent->Move(Monsterspeed);
         }
         for (unsigned int i = 0; i < Bullets.size(); i++) {
             TransformComponent *transComponent = ((TransformComponent *) Bullets[i]->getComponent("transform"));
@@ -759,62 +923,6 @@ class PlayState : public GameState
 
 
         cameraController->update(deltaTime);
-//        shader.set("camera_position", cameraComponent->getEyePosition());
-//        shader.set("view_projection", cameraComponent->getVPMatrix());
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//        int light_index = 0;
-//        const int MAX_LIGHT_COUNT = 16;
-//        for(const auto& e : LightEntities) {
-//            // GET LIGHT COMPONENT FROM ENTITY CONTAINING LIGHT
-//            LightComponent * light = ((LightComponent *)e->getComponent("light"));
-//            TransformComponent * transComponent = ((TransformComponent *)e->getComponent("transform"));
-//
-//            if(!light->enabled) continue;
-//            std::string prefix = "lights[" + std::to_string(light_index) + "].";
-//
-//            shader.set(prefix + "type", static_cast<int>(light->Type));
-//            shader.set(prefix + "color", {1,1,1});
-//
-//
-//            switch (light->Type) {
-//                case LightType::DIRECTIONAL:
-//                    shader.set(prefix + "direction", glm::normalize(transComponent->rotation));
-//                    break;
-//                case LightType::POINT:
-//                    shader.set(prefix + "position", transComponent->position);
-//                    shader.set(prefix + "attenuation_constant", light->attenuation.constant);
-//                    shader.set(prefix + "attenuation_linear", light->attenuation.linear);
-//                    shader.set(prefix + "attenuation_quadratic", light->attenuation.quadratic);
-//                    break;
-//                case LightType::SPOT:
-//                    shader.set(prefix + "position", transComponent->position);
-//                    shader.set(prefix + "direction", glm::normalize(transComponent->rotation));
-//                    shader.set(prefix + "attenuation_constant", light->attenuation.constant);
-//                    shader.set(prefix + "attenuation_linear", light->attenuation.linear);
-//                    shader.set(prefix + "attenuation_quadratic", light->attenuation.quadratic);
-//                    shader.set(prefix + "inner_angle", light->spot_angle.inner);
-//                    shader.set(prefix + "outer_angle", light->spot_angle.outer);
-//                    break;
-//            }
-//            light_index++;
-//            if(light_index >= MAX_LIGHT_COUNT) break;
-//        }
-//        // Since the light array in the shader has a constant size, we need to tell the shader how many lights we sent.
-//        shader.set("light_count", light_index);
-
-
-
-//        //// new added here
-//        TextureObject->LinkTexture();
-//        SampleObject->AttachSample();
-
-//        glUseProgram(shader2);
-//        passLights(&shader2);
-//        shader2.set("sampler", 0);
-//        shader2.set("lod", mml);
-//        shader2.set("zoom", zoom);
-
         cameraMatrix = cameraComponent->getCameraMatrix();
 
 
@@ -953,17 +1061,6 @@ class PlayState : public GameState
         worldbox.draw();
         glCullFace(GL_BACK);
 
-
-    }
-
-    void onExit() override
-    {
-//        shader.destroy();
-//        shader2.destroy();
-//        for ( int i = 0; i<meshes.size(); i++) meshes[i]->destroy();
-//        cube_model.destroy();
-        continue_game = true;
-
     }
 
     void createObject(glm::vec3 pos, glm::vec3 rot, glm::vec3 sc, our::Mesh &mesh, Material * material, Entity * parent =nullptr)
@@ -998,13 +1095,25 @@ class PlayState : public GameState
             Bullets.push_back(ent);
     }
 
-    ~ PlayState()
+    void onExit() override
+    {
+
+        continue_game = true;
+
+    }
+    
+    void EndLevel()
     {
         for(int i = 0; i< Entities.size(); i++)
             delete Entities[i];
         for(int i = 0; i< LightEntities.size(); i++)
             delete LightEntities[i];
 
+        shader.destroy();
+        shader2.destroy();
+        sky_program.destroy();
+        for ( int i = 0; i<meshes.size(); i++)
+            meshes[i]->destroy();
         delete MaterialObj;
         delete MaterialObj2;
         delete MaterialObj3;
@@ -1012,11 +1121,16 @@ class PlayState : public GameState
         delete MaterialObj5;
         delete MaterialObj6;
         delete MaterialObj7;
-        delete MaterialObj8;
+        delete MaterialObj8;   
+        delete TextureObject;
     }
 
+
+
 };
-PlayState *pState = new PlayState();
+LevelOne pState;
+//LevelOne *Level2 = new LevelOne();
+
 class MenuState : public GameState
 {
     int width, height;
@@ -1034,7 +1148,10 @@ public:
         {
             glm::vec2 position = app->getMouse().getMousePosition();
             if (position[0] < (width/2))
-                return switchState(0);
+            {
+                return switchState(1);
+
+            }
             else {
                 //TODO:
                 glfwDestroyWindow(app->window);
@@ -1112,17 +1229,20 @@ public:
     }
 };
 
-MenuState *mState = new MenuState();
+MenuState mState;
 
 
 GameState *switchState(int state)
 {
-    if (state == 1) {
+    if (state == 0) {
 //        mState = new MenuState();
-        return mState;
+
+        return &mState;
     }
-//    pState = new PlayState();
-    return pState;
+//    pState = new LevelOne();
+
+        return &pState;
+
 
     // TODO CHECK CULLING ON SWITCH
 }
@@ -1132,8 +1252,9 @@ GameState *switchState(int state)
 int main(int argc, char **argv)
 {
     // ShaderIntroductionApplication().gotoState(menu);
-    app->gotoState(mState);
+    app->gotoState(&mState);
 
     // return ShaderIntroductionApplication().run();
     return app->run();
+//    delete pState,mState;
 }

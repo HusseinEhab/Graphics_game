@@ -1,8 +1,8 @@
-# Install script for directory: /home/hussein/Desktop/GFX2/Graphics-Engine/vendor/glfw/src
+# Install script for directory: D:/CHS/Senior-2/Graphics/Project/vendor/glfw/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/tears_engine")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -25,11 +25,6 @@ if(NOT CMAKE_INSTALL_COMPONENT)
   else()
     set(CMAKE_INSTALL_COMPONENT)
   endif()
-endif()
-
-# Install shared libraries without execute permission?
-if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
-  set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
 # Is this installation the result of a crosscompile?

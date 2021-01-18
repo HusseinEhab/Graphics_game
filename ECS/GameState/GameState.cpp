@@ -13,5 +13,6 @@ void GameState::onExit(){
 }
 GameState* GameState::handleEvents(){
 
+    return NULL;
 }
 
